@@ -1,5 +1,6 @@
 package com.project2.demo.services;
 
+import com.project2.demo.dto.CitizenHomeDTO;
 import com.project2.demo.entity.Citizen;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +11,11 @@ public interface CitizenService {
 
     Citizen findById(int id);
 
-    Citizen save(Citizen citizen);
+    Citizen add(CitizenHomeDTO citizen);
 
-    Citizen update(Citizen citizen);
+    Citizen update(CitizenHomeDTO citizen);
+
+    Boolean delete(int id);
+
+    List<Citizen> findCitizens(String fullname);
 }
