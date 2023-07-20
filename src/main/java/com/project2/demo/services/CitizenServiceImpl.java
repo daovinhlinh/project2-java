@@ -46,32 +46,8 @@ public class CitizenServiceImpl implements CitizenService{
 
 
     @Override
-    public Citizen add(@RequestBody CitizenHomeDTO citizenHomeDTO) {
-        Citizen citizenData = citizenHomeDTO.getCitizen();
-        Integer homeId = citizenHomeDTO.getHomeId();
-
-        Home home = homeRepository.findById(homeId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid family ID: " + homeId));
-        System.out.println("home"+ home);
-        Citizen newCitizen = new Citizen();
-    if (home != null) {
-        newCitizen.setFullName(citizenData.getFullName());
-        newCitizen.setDob(citizenData.getDob());
-        newCitizen.setImage(citizenData.getImage());
-        newCitizen.setPhone(citizenData.getPhone());
-        newCitizen.setGender(citizenData.getGender());
-        newCitizen.setIdNumber(citizenData.getIdNumber());
-        newCitizen.setEmail(citizenData.getEmail());
-        newCitizen.setHome(home);
-
-        Citizen savedCitizen =  citizenRepository.save(newCitizen);
-        System.out.println(savedCitizen);
-        return savedCitizen;
-
-    } else {
-        return null;
-    }
-
+    public Citizen add(@RequestBody Citizen citizen) {
+        return citizenRepository.save(citizen);
     }
 
     @Override

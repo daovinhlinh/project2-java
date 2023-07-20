@@ -1,5 +1,6 @@
 package com.project2.demo.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.project2.demo.dao.CitizenRepository;
 import com.project2.demo.dao.HomeRepository;
@@ -52,9 +53,10 @@ public class HomeServiceImpl implements HomeService{
     @Override
     public Home add(Home home, Integer citizenIdNumber) {
         Home newhome = new Home(home);
-        Home homeResponse = homeRepository.save(home);
-        addHomeMember(homeResponse.getId(), citizenIdNumber);
-        return newhome;
+        Citizen citizen = citizenRepository.findCitizenByIdnumber(citizenIdNumber);
+        citizen.setHome(newhome);
+        newhome.setOwner(citizen);
+        return homeRepository.save(newhome);
     }
 
 
@@ -74,15 +76,23 @@ public class HomeServiceImpl implements HomeService{
         Home homeResponse =  homeRepository.findById(homeId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid family ID: "));
         String address = body.get("address").asText();
-        Integer idNumber = body.get("idNumber").asInt();
-        Citizen citizen = citizenRepository.findCitizenByIdnumber(idNumber);
+        JsonNode idNumber = body.get("idNumber");
+
+        Citizen citizen = citizenRepository.findCitizenByIdnumber(idNumber.asInt());
         System.out.println(citizen);
         if (homeResponse != null) {
             homeResponse.setAddress(address);
-            homeResponse.setOwner(citizen);
-            citizen.setHome(homeResponse);
+            if (citizen != null) {
+                if (homeResponse.getOwner() != null) {
+                    Citizen currentOwner = citizenRepository.findById(homeResponse.getOwner().getId()).orElseThrow(() -> new IllegalArgumentException("invalid current owner"));
+                        currentOwner.setHome(null);
+                }
+
+                homeResponse.setOwner(citizen);
+                citizen.setHome(homeResponse);
+                citizenRepository.save(citizen);
+            }
             homeRepository.save(homeResponse);
-            citizenRepository.save(citizen);
         } else {
             throw new RuntimeException("Did not find citizen id - " + homeId);
         }
@@ -91,16 +101,14 @@ public class HomeServiceImpl implements HomeService{
     }
 
     @Override
-    public Home addHomeMember(Integer homeId, Integer citizenIdNumber) {
+    public Citizen addHomeMember(Integer homeId, Integer citizenIdNumber) {
         Home home = homeRepository.findById(homeId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid family ID: " + homeId));
 
         Citizen citizen = citizenRepository.findCitizenByIdnumber(citizenIdNumber);
-        System.out.println(citizen);
-//        citizen.setHome(home);
-//        System.out.println(home.getHomeMembers());
-        home.setOwner(citizen);
-//        citizenRepository.save(citizen);
-        return homeRepository.save(home);
+        citizen.setHome(home);
+//        home.setOwner(citizen);
+        homeRepository.save(home);
+        return citizenRepository.save(citizen);
     }
 }

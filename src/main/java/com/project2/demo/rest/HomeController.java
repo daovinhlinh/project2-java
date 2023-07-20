@@ -35,12 +35,13 @@ public class HomeController {
     public Home addHome(@RequestBody ObjectNode node){
         String address = node.get("address").asText();
         Integer citizenIdNumber = node.get("citizenIdNumber").asInt();
+        System.out.println(citizenIdNumber);
         Home newHome = new Home(address);
         return homeService.add(newHome,citizenIdNumber);
     }
 
     @PostMapping("/addMember")
-    public Home addHomeMember(@RequestBody ObjectNode node) {
+    public Citizen addHomeMember(@RequestBody ObjectNode node) {
         System.out.println(node);
         Integer homeId = node.get("id").asInt();
         Integer citizenId = node.get("citizenIdNumber").asInt();

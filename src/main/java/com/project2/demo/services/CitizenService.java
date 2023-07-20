@@ -11,7 +11,7 @@ public interface CitizenService {
 
     Citizen findById(int id);
 
-    Citizen add(CitizenHomeDTO citizen);
+    Citizen add(Citizen citizen);
 
     Citizen update(CitizenHomeDTO citizen);
 

@@ -25,7 +25,7 @@ public class Home {
     private Citizen owner;
 
     @OneToMany()
-    @JoinColumn(name="member", referencedColumnName = "id")
+    @JoinColumn(name="home_id", referencedColumnName = "id")
     private List<Citizen> member;
 
     public Home() {

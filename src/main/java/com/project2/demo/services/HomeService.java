@@ -20,5 +20,5 @@ public interface HomeService {
 
     Boolean delete(Integer id);
 
-    Home addHomeMember(Integer id, Integer citizenIdNumber);
+    Citizen addHomeMember(Integer id, Integer citizenIdNumber);
 }

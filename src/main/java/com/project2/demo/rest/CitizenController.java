@@ -30,7 +30,7 @@ public class CitizenController {
     }
 
     @PostMapping("/add")
-    public Citizen addCitizen(@RequestBody CitizenHomeDTO citizen){
+    public Citizen addCitizen(@RequestBody Citizen citizen){
         return citizenService.add(citizen);
     }
 
